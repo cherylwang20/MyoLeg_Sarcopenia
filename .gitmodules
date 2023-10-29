@@ -1,3 +1,3 @@
-[submodule "robohive"]
-	path = robohive
-	url = git@github.com:cherylwang20/robohive.git
+[submodule "mj_envs"]
+	path = mj_envs
+	url = git@github.com:cherylwang20/mj_envs.git
