@@ -35,7 +35,7 @@ dof_env = ['myoLegReachFixed-v1']
 env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v1')
 
 
-training_steps = 1000000
+training_steps = 20000000
 for env_name in dof_env:
 	print('Begin training')
 	print(env_name)
