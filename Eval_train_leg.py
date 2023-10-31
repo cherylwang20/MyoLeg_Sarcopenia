@@ -21,8 +21,11 @@ import random
 nb_seed = 1
 
 movie = True
-path = r'C:\Users\chery\Documents\MyoLeg_Sarcopenia'
-model = PPO.load(r'C:\Users\chery\Documents\MyoLeg_Sarcopenia\standingBalance\policy_best_model\myoLegReachFixed-v1\2023_10_30_16_32_57\best_model.zip')
+path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
+env_name = 'myoLegReachFixed-v1'
+model_num = '2023_10_29_13_28_06'
+model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                 r'/best_model')
 s, m, t = [], [], []
 
 env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v1')
@@ -56,9 +59,9 @@ for _ in range(1000):
 env.close()
 
 if movie:
-	os.makedirs(path+'/videos/myoLegReachFixed/', exist_ok=True)
+	os.makedirs(path+'/videos' +'/' + env_name, exist_ok=True)
 # make a local copy
-	skvideo.io.vwrite(path+'/videos/myoLegReachFixed/video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
+	skvideo.io.vwrite(path+'/videos'  +'/' + env_name + '/' + model_num + 'video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
 	
 fig = plt.figure('myoLegReachFixed')
 plt.subplot(211)
@@ -68,7 +71,7 @@ plt.legend((['x', 'y', 'z']))
 plt.subplot(212)
 plt.imshow(np.array(m).T, aspect='auto');plt.colorbar()
 plt.title('Muscle Activations')
-os.makedirs(path+'/image/myoLegReachFixed/', exist_ok=True)
-fig.savefig(path+'/image/myoLegReachFixed/image.png', dpi=fig.dpi)
+os.makedirs(path+'/image' +'/' + env_name, exist_ok=True)
+fig.savefig(path+'/image'  +'/' + env_name + '/' + model_num + 'image.png', dpi=fig.dpi)
 
 plt.close(fig)
