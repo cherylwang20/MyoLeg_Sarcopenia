@@ -35,7 +35,7 @@ dof_env = ['myoLegReachFixed-v1']
 env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v1')
 
 
-training_steps = 20000000
+training_steps = 15000000
 for env_name in dof_env:
 	print('Begin training')
 	print(env_name)
@@ -70,5 +70,3 @@ for env_name in dof_env:
 
 	print(time_now)
 	print(f"Elapsed time: {hours} hours, {minutes} minutes, {seconds} seconds.")
-
-	#python -m tensorboard.main --logdir=myoLegReachFixed-v1_2023_10_28_23_48_41_1

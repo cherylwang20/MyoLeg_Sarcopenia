@@ -23,7 +23,7 @@ nb_seed = 1
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 env_name = 'myoLegReachFixed-v1'
-model_num = '2023_10_29_13_28_06'
+model_num = '2023_10_31_21_28_18'
 model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                  r'/best_model')
 s, m, t = [], [], []
@@ -36,7 +36,7 @@ random.seed()
 
 frames = []
 
-for _ in range(1000):
+for _ in range(700):
 	
 	obs = env.get_obs_vec()
 	
