@@ -17,13 +17,14 @@ skvideo.setFFmpegPath(r"C:\ffmpeg\bin")
 import skvideo.io
 import os
 import random
+from tqdm.auto import tqdm
 
 nb_seed = 1
 
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 env_name = 'myoLegReachFixed-v1'
-model_num = '2023_10_31_21_28_18'
+model_num = '2023_11_03_01_45_50'
 model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                  r'/best_model')
 s, m, t = [], [], []
@@ -35,27 +36,45 @@ env.reset()
 random.seed() 
 
 frames = []
+for _ in tqdm(range(5)):
+    env.reset()
+    ep_rewards = []
+    done = False
+    obs = env.reset()
+    for _ in range(150):
+          obs = env.get_obs_vec()
+          
+          action, _ = model.predict(obs, deterministic=True)
 
-for _ in range(700):
-	
-	obs = env.get_obs_vec()
-	
-	action, _ = model.predict(obs, deterministic=True)
+          env.sim.data.ctrl[:] = action
+          obs, reward, done, info = env.step(action)
+          t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
+          m.append(action)
+          if movie:
+                  frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=1) 
+            # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
+                  frames.append(frame[::-1,:,:])
+                  #env.sim.render(mode='window') # GUI
 
-	env.sim.data.ctrl[:] = action
-	env.step(action)
+
+# evaluate policy
+all_rewards = []
+for _ in tqdm(range(20)): # 20 random targets
+  ep_rewards = []
+  done = False
+  obs = env.reset()
+  while not done:
+      # get the next action from the policy
+      #env.mj_render()
+      action, _ = model.predict(obs)
+      # take an action based on the current observation
+      obs, reward, done, info = env.step(action)
+      ep_rewards.append(reward)
+  all_rewards.append(np.sum(ep_rewards))
+env.close()
+print(f"Average reward: {np.mean(all_rewards)} over 20 episodes")
 
 
-
-	t.append(env.obs_dict['reach_err'])
-	#s.append(env.sim.data.qpos[joint_interest_id])
-	m.append(action)
-	if movie:
-		#env.sim.render(mode='window') # GUI
-		frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=1) # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
-	#print(_)
-		frames.append(frame[::-1,:,:])
-	
 env.close()
 
 if movie:
