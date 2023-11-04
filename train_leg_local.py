@@ -29,10 +29,10 @@ class TensorboardCallback(BaseCallback):
 	
 	    return True
 
-dof_env = ['myoLegReachFixed-v2']
+dof_env = ['myoLegReachFixed-v1']
 
 #env = gym.make('mj_envs.robohive.envs.myo:myoLegStairTerrainWalk-v0')
-env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2') 
+env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v1') 
 
 
 training_steps = 15000000
