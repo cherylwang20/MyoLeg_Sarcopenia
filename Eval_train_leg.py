@@ -24,7 +24,7 @@ nb_seed = 1
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 env_name = 'myoLegReachFixed-v1'
-model_num = '2023_11_04_12_10_18'
+model_num = 'Carlota'
 model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                  r'/best_model')
 s, m, t = [], [], []
@@ -36,7 +36,7 @@ env.reset()
 random.seed() 
 
 frames = []
-for _ in tqdm(range(5)):
+for _ in tqdm(range(3)):
     env.reset()
     ep_rewards = []
     done = False
@@ -52,9 +52,10 @@ for _ in tqdm(range(5)):
           m.append(action)
           if movie:
                   frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=1) 
+                  frame = np.rot90(np.rot90(frame))
             # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
                   frames.append(frame[::-1,:,:])
-                  #env.sim.render(mode='window') # GUI
+                  #env.sim.mj_render(mode='window') # GUI
 
 
 # evaluate policy
