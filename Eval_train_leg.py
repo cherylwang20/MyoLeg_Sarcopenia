@@ -23,13 +23,13 @@ nb_seed = 1
 
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
-env_name = 'myoLegReachFixed-v1'
-model_num = 'Carlota'
+env_name = 'myoLegReachFixed-v2'
+model_num = '2023_11_08_12_25_20'
 model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                  r'/best_model')
 s, m, t = [], [], []
 
-env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v1')
+env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
 
 env.reset()
 
@@ -37,11 +37,10 @@ random.seed()
 
 frames = []
 for _ in tqdm(range(3)):
-    env.reset()
     ep_rewards = []
     done = False
     obs = env.reset()
-    for _ in range(150):
+    for _ in range(250):
           obs = env.get_obs_vec()
           
           action, _ = model.predict(obs, deterministic=True)
@@ -56,6 +55,7 @@ for _ in tqdm(range(3)):
             # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
                   frames.append(frame[::-1,:,:])
                   #env.sim.mj_render(mode='window') # GUI
+    print(env.perturbation_time, env.perturbation_magnitude)
 
 
 # evaluate policy

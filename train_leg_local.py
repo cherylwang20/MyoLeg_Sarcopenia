@@ -29,10 +29,10 @@ class TensorboardCallback(BaseCallback):
 	
 	    return True
 
-dof_env = ['myoLegReachFixed-v1']
+dof_env = ['myoLegReachFixed-v2']
 
 #env = gym.make('mj_envs.robohive.envs.myo:myoLegStairTerrainWalk-v0')
-env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v1')
+env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
 
 training_steps = 15000000
 for env_name in dof_env:
@@ -61,6 +61,7 @@ for env_name in dof_env:
 	callback = CallbackList([obs_callback, eval_callback])
 
 	model.learn(total_timesteps= training_steps, tb_log_name=env_name+"_" + time_now, callback=eval_callback)
+	model.save('ep_train_results')
 	elapsed_time = time.time() - start_time
 
 	hours = int(elapsed_time // 3600)
