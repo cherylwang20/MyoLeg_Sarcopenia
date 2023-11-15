@@ -21,12 +21,21 @@ from tqdm.auto import tqdm
 
 nb_seed = 1
 
+sarco = True
+
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
-env_name = 'myoLegReachFixed-v2'
-model_num = '2023_11_08_12_25_20'
-model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
-                 r'/best_model')
+
+model_num = '2023_11_13_09_34_09'
+if sarco:
+  env_name = 'myoSarcLegReachFixed-v2'
+  #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
+  model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                  r'/best_model')
+else:
+  env_name = 'myoLegReachFixed-v2'
+  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                  r'/best_model')
 s, m, t = [], [], []
 
 env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
@@ -55,7 +64,6 @@ for _ in tqdm(range(3)):
             # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
                   frames.append(frame[::-1,:,:])
                   #env.sim.mj_render(mode='window') # GUI
-    print(env.perturbation_time, env.perturbation_magnitude)
 
 
 # evaluate policy
@@ -79,9 +87,12 @@ print(f"Average reward: {np.mean(all_rewards)} over 20 episodes")
 env.close()
 
 if movie:
-	os.makedirs(path+'/videos' +'/' + env_name, exist_ok=True)
-# make a local copy
-	skvideo.io.vwrite(path+'/videos'  +'/' + env_name + '/' + model_num + 'video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
+    if sarco:
+      os.makedirs(path+'/videos/sarco' +'/' + env_name, exist_ok=True)
+      skvideo.io.vwrite(path+'/videos/sarco'  +'/' + env_name + '/' + model_num + 'video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
+    else:
+      os.makedirs(path+'/videos' +'/' + env_name, exist_ok=True)
+      skvideo.io.vwrite(path+'/videos'  +'/' + env_name + '/' + model_num + 'video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
 	
 fig = plt.figure('myoLegReachFixed')
 plt.subplot(211)
