@@ -12,7 +12,7 @@ from stable_baselines3.common.callbacks import EvalCallback
 import torch
 import matplotlib.pyplot as plt
 import skvideo
-skvideo.setFFmpegPath(r"C:\ffmpeg\bin")
+#skvideo.setFFmpegPath(r"C:\ffmpeg\bin")
 #skvideo.setFFmpegPath(r'C:\users\chery\appdata\local\packages\pythonsoftwarefoundation.python.3.8_qbz5n2kfra8p0\localcache\local-packages\python38\site-packages\ffmpeg')
 import skvideo.io
 import os
@@ -21,13 +21,14 @@ from tqdm.auto import tqdm
 
 nb_seed = 1
 
-sarco = True
+sarco = False
 
-movie = True
+movie = False
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 
 model_num = '2023_11_16_10_29_42'
 if sarco:
+  env_name = 'myoSarcLegReachFixed-v3'
   env_name = 'myoSarcLegReachFixed-v3'
   #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ env_name + '/' + model_num +
