@@ -26,19 +26,21 @@ sarco = True
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 
-model_num = '2023_11_13_09_34_09'
+model_num = '2023_11_16_10_29_42'
 if sarco:
-  env_name = 'myoSarcLegReachFixed-v2'
+  env_name = 'myoSarcLegReachFixed-v3'
   #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ env_name + '/' + model_num +
                   r'/best_model')
+  env = gym.make('mj_envs.robohive.envs.myo:myoSarcLegReachFixed-v3')
+
 else:
   env_name = 'myoLegReachFixed-v2'
   model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                   r'/best_model')
-s, m, t = [], [], []
+  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v3')
 
-env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
+s, m, t = [], [], []
 
 env.reset()
 
@@ -72,13 +74,15 @@ for _ in tqdm(range(20)): # 20 random targets
   ep_rewards = []
   done = False
   obs = env.reset()
-  while not done:
+  step = 0
+  while (not done) and (step < 700):
       # get the next action from the policy
       #env.mj_render()
       action, _ = model.predict(obs)
       # take an action based on the current observation
       obs, reward, done, info = env.step(action)
       ep_rewards.append(reward)
+      step += 1
   all_rewards.append(np.sum(ep_rewards))
 env.close()
 print(f"Average reward: {np.mean(all_rewards)} over 20 episodes")

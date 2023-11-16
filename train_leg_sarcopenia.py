@@ -29,9 +29,9 @@ class TensorboardCallback(BaseCallback):
 	
 	    return True
 
-dof_env = ['myoSarcLegReachFixed-v2']
+dof_env = ['myoSarcLegReachFixed-v3']
 
-env = gym.make('mj_envs.robohive.envs.myo:myoSarcLegReachFixed-v2')
+env = gym.make('mj_envs.robohive.envs.myo:myoSarcLegReachFixed-v3')
 
 training_steps = 20000000
 for env_name in dof_env:
@@ -52,8 +52,8 @@ for env_name in dof_env:
 	print('obs len:', len(obs))
 	#policy_kwargs = dict(activation_fn=torch.nn.Sigmoid, net_arch=[dict(pi=[64], vf=[64])])
 	policy_kwargs = dict(activation_fn=torch.nn.Sigmoid, net_arch=(dict(pi=[64, 64], vf=[64, 64])))
-	model = PPO('MlpPolicy', env, verbose=0, ent_coef= 0.001, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/standingBalance-sarco/temp_env_tensorboard/" + env_name)
-	#model = PPO.load('./policy_best_model/myoLegReachFixed-v1/2023_05_17_18_05_04/best_model.zip', env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./temp_env_tensorboard/")
+	#model = PPO('MlpPolicy', env, verbose=0, ent_coef= 0.001, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/standingBalance-sarco/temp_env_tensorboard/" + env_name)
+	model = PPO.load('standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v3/2023_11_15_18_48_30/best_model', env, ent_coef= 0.001, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/standingBalance-sarco/temp_env_tensorboard/"+ env_name)
 
 	obs_callback = TensorboardCallback()
 
