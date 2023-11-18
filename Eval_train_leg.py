@@ -23,12 +23,11 @@ nb_seed = 1
 
 sarco = False
 
-movie = False
+movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 
-model_num = '2023_11_16_10_29_42'
+model_num = '2023_11_17_16_02_09'
 if sarco:
-  env_name = 'myoSarcLegReachFixed-v3'
   env_name = 'myoSarcLegReachFixed-v3'
   #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ env_name + '/' + model_num +
@@ -39,7 +38,7 @@ else:
   env_name = 'myoLegReachFixed-v2'
   model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                   r'/best_model')
-  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v3')
+  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
 
 s, m, t = [], [], []
 
@@ -56,13 +55,12 @@ for _ in tqdm(range(3)):
           obs = env.get_obs_vec()
           
           action, _ = model.predict(obs, deterministic=True)
-
           env.sim.data.ctrl[:] = action
           obs, reward, done, info = env.step(action)
           t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
           m.append(action)
           if movie:
-                  frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=1) 
+                  frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=0) 
                   frame = np.rot90(np.rot90(frame))
             # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
                   frames.append(frame[::-1,:,:])
