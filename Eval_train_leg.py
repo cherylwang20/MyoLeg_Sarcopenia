@@ -3,7 +3,7 @@ from gym import spaces
 import mujoco_py
 import mj_envs
 import numpy as np
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,10 +23,10 @@ nb_seed = 1
 
 sarco = False
 
-movie = False
-path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
+movie = True
+path = '~/'
 
-model_num = '2023_11_16_20_46_41'
+model_num = '2023_11_16_16_11_00'
 if sarco:
   env_name = 'myoSarcLegReachFixed-v3'
   #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
@@ -36,9 +36,9 @@ if sarco:
 
 else:
   env_name = 'myoLegReachFixed-v2'
-  model = PPO.load('./standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                   r'/best_model')
-  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
+  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v3')
 
 s, m, t = [], [], []
 
@@ -55,7 +55,6 @@ for _ in tqdm(range(3)):
           obs = env.get_obs_vec()
           
           action, _ = model.predict(obs, deterministic=True)
-
           env.sim.data.ctrl[:] = action
           obs, reward, done, info = env.step(action)
           t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
