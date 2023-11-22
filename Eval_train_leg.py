@@ -3,7 +3,7 @@ from gym import spaces
 import mujoco_py
 import mj_envs
 import numpy as np
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -26,7 +26,7 @@ sarco = False
 movie = True
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 
-model_num = '2023_11_17_16_02_09'
+model_num = '2023_11_16_16_11_00'
 if sarco:
   env_name = 'myoSarcLegReachFixed-v3'
   #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
@@ -36,8 +36,10 @@ if sarco:
 
 else:
   env_name = 'myoLegReachFixed-v2'
-  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
-                  r'/best_model')
+  #model = SAC.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance/SAR_RL_Leg_Stability_model_myoLegReachFixed-v2_0")
+  #model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                  #r'/best_model')
+  model=PPO.load('ep_train_results')
   env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
 
 s, m, t = [], [], []
@@ -60,7 +62,7 @@ for _ in tqdm(range(3)):
           t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
           m.append(action)
           if movie:
-                  frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=0) 
+                  frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=1) 
                   frame = np.rot90(np.rot90(frame))
             # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
                   frames.append(frame[::-1,:,:])

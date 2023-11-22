@@ -20,12 +20,20 @@ import random
 from matplotlib.backends.backend_pdf import PdfPages 
 
 from shapely.geometry import Polygon
-def PolyArea(x,y):
-    return 0.5*np.abs(np.dot(x,np.roll(y,1))-np.dot(y,np.roll(x,1)))
+import matplotlib.pyplot as plt
 
-x = [1, 1, -1, -1]
-y = [1, -1, -1, 1]
+x1 = [1, 1, -1, -1, 1]
+y1 = [1, -1, -1, 1, 1]
+areaofbase1 = Polygon(zip(x1, y1)).area
 
-print(PolyArea(x, y))
-areaofbase = Polygon(zip(x, y)).area
-print(areaofbase)
+x2 = [2, 2, -1, -1, 2]
+y2 = [-1, -3, 1, 3, -1]
+areaofbase2= Polygon(zip(x2, y2)).area
+
+
+print(areaofbase1, areaofbase2)
+
+plt.figure()
+plt.plot(x1, y1)
+plt.plot(x2, y2)
+plt.show()

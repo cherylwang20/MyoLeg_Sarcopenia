@@ -167,7 +167,6 @@ def plot_zeroshot(ax, data, colors=None, total_width=0.8, single_width=1, legend
 def plot_results(smoothing=1000, experiment='locomotion', terrain=None):
     """
     Plots the results for the specified experiment and terrain.
-
     Parameters
     ----------
     smoothing : int, optional
@@ -298,7 +297,7 @@ class SynergyWrapper(gym.ActionWrapper):
     gym.ActionWrapper that reformulates the action space as the synergy space and inverse transforms
     synergy-exploiting actions back into the original muscle activation space.
     """
-    def __init__(self, env, ica, pca, phi):
+    def __init__(self, env, ica, pca,  phi):
         super().__init__(env)
         self.ica = ica
         self.pca = pca
@@ -347,7 +346,7 @@ def get_vid(name, env_name, seed, episodes, video_name, determ=False,
         if syn_nosyn:
             env = SynNoSynWrapper(gym.make(env_name), ica, pca, normalizer, phi)
         else:
-            env = SynergyWrapper(gym.make(env_name), ica, pca, normalizer, phi)
+            env = SynergyWrapper(gym.make(env_name), ica, pca,  phi)
     else:
         env = gym.make(env_name)
 
@@ -359,8 +358,8 @@ def get_vid(name, env_name, seed, episodes, video_name, determ=False,
     for i,__ in tqdm(enumerate(range(episodes))):
         env.reset()
 
-        model = SAC.load(f'{name}_model_{env_name}_{seed}.zip')
-        vec = VecNormalize.load(f'{name}_env_{env_name}_{seed}', DummyVecEnv([lambda: env]))
+        model = SAC.load(f'./standingBalance/{name}_model_myoLegReachFixed-v2_{seed}')
+        vec = VecNormalize.load(f'./standingBalance/{name}_env_myoLegReachFixed-v2_{seed}', DummyVecEnv([lambda: env]))
 
         rs = 0
         is_solved = []

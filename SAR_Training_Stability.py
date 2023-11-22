@@ -1,4 +1,8 @@
 from SAR_tutorial_utils import *
+from stable_baselines3 import PPO, SAC
+
+from datetime import datetime
+import torch
 
 def train(env_name, policy_name, timesteps, seed):
     """
@@ -10,24 +14,22 @@ def train(env_name, policy_name, timesteps, seed):
     seed: str (not int); relevant if you want to train multiple policies with the same params
     """
     env = gym.make(env_name)
-    env = Monitor(env)
+    #env = Monitor(env)
     env = DummyVecEnv([lambda: env])
-    #env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
+    env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
     
     net_shape = [400, 300]
     policy_kwargs = dict(net_arch=dict(pi=net_shape, qf=net_shape))
-    
     model = SAC('MlpPolicy', env, learning_rate=linear_schedule(.001), buffer_size=int(3e5),
             learning_starts=1000, batch_size=256, tau=.02, gamma=.98, train_freq=(1, "episode"),
             gradient_steps=-1,policy_kwargs=policy_kwargs, verbose=1)
-    
     succ_callback = SaveSuccesses(check_freq=1, env_name=env_name+'_'+seed, 
-                             log_dir=f'{policy_name}_successes_{env_name}_{seed}')
+                             log_dir=f'{policy_name}_successes_myoLegReachFixed-v2_{seed}')
     
-    model.set_logger(configure(f'{policy_name}_results_{env_name}_{seed}'))
+    model.set_logger(configure(f'{policy_name}_results_myoLegReachFixed-v2_{seed}'))
     model.learn(total_timesteps=int(timesteps), callback=succ_callback, log_interval=4)
-    model.save(f"{policy_name}_model_{env_name}_{seed}")
-    env.save(f'{policy_name}_env_{env_name}_{seed}')
+    model.save(f"{policy_name}_model_myoLegReachFixed-v2_{seed}")
+    env.save(f'{policy_name}_env_myoLegReachFixed-v2_{seed}')
 
 def SAR_RL(env_name, policy_name, timesteps, seed, ica, pca, normalizer, phi=.66, syn_nosyn=True):
     """
@@ -46,23 +48,24 @@ def SAR_RL(env_name, policy_name, timesteps, seed, ica, pca, normalizer, phi=.66
         env = SynNoSynWrapper(gym.make(env_name), ica, pca, normalizer, phi)
     else:
         env = SynergyWrapper(gym.make(env_name), ica, pca, normalizer)
-    env = Monitor(env)
+    #env = Monitor(env)
     env = DummyVecEnv([lambda: env])
-    #env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
+    env = VecNormalize(env, norm_obs=True, norm_reward=False, clip_obs=10.)
     net_shape = [400, 300]
     policy_kwargs = dict(net_arch=dict(pi=net_shape, qf=net_shape))
+
     
     model = SAC('MlpPolicy', env, learning_rate=linear_schedule(.001), buffer_size=int(3e5),
             learning_starts=5000, batch_size=256, tau=.02, gamma=.98, train_freq=(1, "episode"),
             gradient_steps=-1,policy_kwargs=policy_kwargs, verbose=1)
     
     succ_callback = SaveSuccesses(check_freq=1, env_name=env_name+'_'+seed, 
-                             log_dir=f'{policy_name}_successes_{env_name}_{seed}')
+                             log_dir=f'./standingBalance/{policy_name}_successes_myoLegReachFixed-v2_{seed}')
     
-    model.set_logger(configure(f'{policy_name}_results_{env_name}_{seed}'))
+    model.set_logger(configure(f'{policy_name}_results_myoLegReachFixed-v2_{seed}'))
     model.learn(total_timesteps=int(timesteps), callback=succ_callback, log_interval=4)
-    model.save(f"{policy_name}_model_{env_name}_{seed}")
-    env.save(f'{policy_name}_env_{env_name}_{seed}')
+    model.save(f"./StandingBalance/{policy_name}_model_myoLegReachFixed-v2_{seed}")
+    env.save(f'./StandingBalance/{policy_name}_env_myoLegReachFixed-v2_{seed}')
 def get_activations(name, env_name, seed, episodes=2000, percentile=80):
     """
     Returns muscle activation data from N runs of a trained policy.
@@ -76,8 +79,8 @@ def get_activations(name, env_name, seed, episodes=2000, percentile=80):
     with gym.make(env_name) as env:
         env.reset()
 
-        model = SAC.load(f'{name}_model_{env_name}_{seed}')
-        vec = VecNormalize.load(f'{name}_env_{env_name}_{seed}', DummyVecEnv([lambda: env]))
+        model = SAC.load(f'{name}_model_myoLegReachFixed-v2_{seed}')
+        vec = VecNormalize.load(f'{name}_env_myoLegReachFixed-v2_{seed}', DummyVecEnv([lambda: env]))
 
         # Calculate the reward threshold from 100 preview episodes
         preview_rewards = []
@@ -122,7 +125,7 @@ def find_synergies(acts, plot=True):
     plot: bool; whether to plot the result
     """
     syn_dict = {}
-    for i in range(acts.shape[1]):
+    for i in range(len(acts[1])):
         pca = PCA(n_components=i+1)
         _ = pca.fit_transform(acts)
         syn_dict[i+1] =  round(sum(pca.explained_variance_ratio_), 4)
@@ -162,8 +165,18 @@ def compute_SAR(acts, n_syn, save=False):
 
 env_name = 'mj_envs.robohive.envs.myo:myoLegReachFixed-v2'
 
-train(env_name, 'play_period', 1.5e6, '0')
-muscle_data = get_activations(name='play_period', env_name=env_name, seed='0', episodes=1000)
-syn_dict = find_synergies(muscle_data, plot=True)
+'''
+train(env_name, 'play_period', 1.5e3, '0')
+muscle_data = get_activations(name='play_period', env_name=env_name, seed='0', episodes=10)
+syn_dict = find_synergies(muscle_data, plot=False)
 ica,pca,normalizer = compute_SAR(muscle_data, 20, save=False)
-SAR_RL(env_name = env_name ,  policy_name = 'SAR_RL', timesteps = 2.5e6, seed = '0', ica=ica, pca=pca, normalizer = normalizer, phi = 0.66, syn_nosyn=False)
+'''
+ica,pca,normalizer = load_locomotion_SAR()
+SAR_RL(env_name = env_name ,  policy_name = 'SAR_RL_Leg_Stability', timesteps = 5e3, seed = '0', ica=ica, pca=pca, normalizer = normalizer, phi = 0.66, syn_nosyn=False)
+
+video_name = 'stability_SAR-RL_video'
+
+get_vid(name='SAR_RL_Leg_Stability', env_name=env_name, seed='0', episodes=5, video_name=video_name, 
+        determ=False, pca=pca, ica=ica, normalizer=normalizer, phi=.66, is_sar=True, syn_nosyn=False)
+
+show_video(f"{video_name}.mp4")
