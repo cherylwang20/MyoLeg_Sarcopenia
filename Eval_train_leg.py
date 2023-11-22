@@ -26,9 +26,8 @@ sarco = False
 movie = False
 path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
 
-model_num = '2023_11_16_10_29_42'
+model_num = '2023_11_16_20_46_41'
 if sarco:
-  env_name = 'myoSarcLegReachFixed-v3'
   env_name = 'myoSarcLegReachFixed-v3'
   #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ env_name + '/' + model_num +
@@ -37,9 +36,9 @@ if sarco:
 
 else:
   env_name = 'myoLegReachFixed-v2'
-  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+  model = PPO.load('./standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                   r'/best_model')
-  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v3')
+  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
 
 s, m, t = [], [], []
 
