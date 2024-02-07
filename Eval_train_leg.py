@@ -22,25 +22,30 @@ from tqdm.auto import tqdm
 nb_seed = 1
 
 sarco = False
-
+step = False
 movie = True
-path = 'C:/Users/chery/Documents/MyoLeg_Sarcopenia'
+path = './'
 
-model_num = '2023_11_16_16_11_00'
+model_num = '2024_01_16_22_17_55'
 if sarco:
   env_name = 'myoSarcLegReachFixed-v3'
-  #model = PPO.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance-sarco/policy_best_model/myoSarcLegReachFixed-v2/2023_11_09_11_44_06/best_model")
-  model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ env_name + '/' + model_num +
+  model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ 'myoLegReachFixed-v2' + '/' + model_num +
                   r'/best_model')
-  env = gym.make('mj_envs.robohive.envs.myo:myoSarcLegReachFixed-v3')
-
+  env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
+elif step:
+    env_name = 'myoLegStep-v0'
+    model = PPO.load('ep_train_results')
+    #model = SAC.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance/SAR_RL_Leg_Stability_model_myoLegReachFixed-v2_0")
+    #model = PPO.load(path+'/StepBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                  #r'/best_model')
+    env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 else:
   env_name = 'myoLegReachFixed-v2'
-  #model = SAC.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance/SAR_RL_Leg_Stability_model_myoLegReachFixed-v2_0")
-  #model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
-                  #r'/best_model')
-  model=PPO.load('ep_train_results')
-  env = gym.make('mj_envs.robohive.envs.myo:myoLegReachFixed-v2')
+  #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
+                   #+ model_num + '/best_model')
+  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                  r'/best_model')
+  env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 
 s, m, t = [], [], []
 
@@ -49,29 +54,35 @@ env.reset()
 random.seed() 
 
 frames = []
+view = 'front'
 for _ in tqdm(range(3)):
     ep_rewards = []
     done = False
     obs = env.reset()
-    for _ in range(250):
-          obs = env.get_obs_vec()
+    step = 0
+    for _ in tqdm(range(700)):
+          obs = env.obsdict2obsvec(env.obs_dict, env.obs_keys)[1]
+          #obs = env.get_obs_dict()
           
           action, _ = model.predict(obs, deterministic=True)
-          env.sim.data.ctrl[:] = action
+          #env.sim.data.ctrl[:] = action
           obs, reward, done, info = env.step(action)
-          t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
+          #t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
           m.append(action)
           if movie:
-                  frame = env.sim.renderer.render_offscreen(width=400, height=400, camera_id=1) 
+                  geom_1_indices = np.where(env.sim.model.geom_group == 1)
+                  env.sim.model.geom_rgba[geom_1_indices, 3] = 0
+                  frame = env.sim.renderer.render_offscreen(width=640, height=480,camera_id=f'{view}_view')
                   frame = np.rot90(np.rot90(frame))
             # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
                   frames.append(frame[::-1,:,:])
                   #env.sim.mj_render(mode='window') # GUI
+          step += 1
 
 
 # evaluate policy
 all_rewards = []
-for _ in tqdm(range(20)): # 20 random targets
+for _ in tqdm(range(10)): # 20 random targets
   ep_rewards = []
   done = False
   obs = env.reset()
@@ -94,20 +105,8 @@ env.close()
 if movie:
     if sarco:
       os.makedirs(path+'/videos/sarco' +'/' + env_name, exist_ok=True)
-      skvideo.io.vwrite(path+'/videos/sarco'  +'/' + env_name + '/' + model_num + 'video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
+      skvideo.io.vwrite(path+'/videos/sarco'  +'/' + env_name + '/' + model_num + f'{view}_video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
     else:
       os.makedirs(path+'/videos' +'/' + env_name, exist_ok=True)
-      skvideo.io.vwrite(path+'/videos'  +'/' + env_name + '/' + model_num + 'video.mp4', np.asarray(frames),outputdict={"-pix_fmt": "yuv420p"})
+      skvideo.io.vwrite(path+'/videos'  +'/' + env_name + '/' + model_num + f'{view}_video.mp4', np.asarray(frames), inputdict = {'-r':'100'} , outputdict={"-pix_fmt": "yuv420p"})
 	
-fig = plt.figure('myoLegReachFixed')
-plt.subplot(211)
-plt.plot(np.array(t),'--',label='traj')
-plt.plot(np.array(s),label='policy')
-plt.legend((['x', 'y', 'z']))
-plt.subplot(212)
-plt.imshow(np.array(m).T, aspect='auto');plt.colorbar()
-plt.title('Muscle Activations')
-os.makedirs(path+'/image' +'/' + env_name, exist_ok=True)
-fig.savefig(path+'/image'  +'/' + env_name + '/' + model_num + 'image.png', dpi=fig.dpi)
-
-plt.close(fig)
