@@ -54,7 +54,7 @@ env.reset()
 random.seed() 
 
 frames = []
-view = 'front'
+view = 'side'
 for _ in tqdm(range(3)):
     ep_rewards = []
     done = False

@@ -10,6 +10,8 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, CallbackList, BaseCallback
+from stable_baselines3.common.monitor import Monitor
+import helper_callback
 
 from datetime import datetime
 import torch
@@ -32,11 +34,24 @@ class TensorboardCallback(BaseCallback):
 	    self.logger.record("obs", value)
 	
 	    return True
+	
+class CustomNeptuneCallback(BaseCallback):
+    def __init__(self, run):
+        super(CustomNeptuneCallback, self).__init__(verbose=1)
+        self.run = run
+        # You might want to add more parameters here if needed
+
+    def _on_step(self) -> bool:
+        # Check if an episode has ended
+        if 'episode' in self.locals["infos"][0]:
+            episode_info = self.locals["infos"][0]['episode']
+            # Log episodic information to Neptune
+            self.run["metrics/episode_reward"].append(episode_info['r'])
+            self.run["metrics/episode_length"].append(episode_info['l'])
+
+        return True
 
 dof_env = ['myoLegReachFixed-v2']
-
-#env = gym.make('mj_envs.robohive.envs.myo:myoLegStairTerrainWalk-v0')
-env = gym.make(f'mj_envs.robohive.envs.myo:{dof_env[0]}')
 
 training_steps = 5000000
 for env_name in dof_env:
@@ -70,15 +85,19 @@ for env_name in dof_env:
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
+	loaded_model = "2024_01_15_22_17_05"
+
 	parameter = {
     "dense_units": 256,
     "activation": "relu",
     "max_episode_steps": env._max_episode_steps,
 	"training_steps": training_steps,
-	"loaded_model": "2024_01_15_22_17_05",
+	"loaded_model": loaded_model,
 	}
 
 	parameters = {**parameter, **env.rwd_keys_wt}
+
+	print(env.rwd_keys_wt)
 
 	run["model/parameters"] = parameters
 	
@@ -94,13 +113,13 @@ for env_name in dof_env:
 	else:
 		#model = PPO('MlpPolicy', env, verbose=0, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/StandingBalance/temp_env_tensorboard/"+env_name)
 		#model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/2024_01_03_10_31_35/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
-		model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/2024_01_15_22_17_05/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
+		model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
 	
 	obs_callback = TensorboardCallback()
+	nep_callback = CustomNeptuneCallback(run=run)
+	callback = CallbackList([eval_callback, nep_callback])
 
-	callback = CallbackList([obs_callback, eval_callback])
-
-	model.learn(total_timesteps= training_steps, tb_log_name=env_name+"_" + time_now, callback=eval_callback)
+	model.learn(total_timesteps= training_steps, tb_log_name=env_name+"_" + time_now, callback=callback)
 	model.save('ep_train_results')
 	elapsed_time = time.time() - start_time
 
