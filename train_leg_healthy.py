@@ -91,9 +91,11 @@ for env_name in dof_env:
     "max_episode_steps": env._max_episode_steps,
 	"training_steps": training_steps,
 	"loaded_model": loaded_model,
+	"perturb_force_low": env.force_range[0],
+    "perturb_force_high": env.force_range[0]
 	}
 
-	parameters = {**parameter, **env.rwd_keys_wt, **env.obs_dict.keys}
+	parameters = {**parameter, **env.rwd_keys_wt}
 	run["model/parameters"] = parameters
 	
 	
