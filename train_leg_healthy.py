@@ -93,10 +93,7 @@ for env_name in dof_env:
 	"loaded_model": loaded_model,
 	}
 
-	parameters = {**parameter, **env.rwd_keys_wt}
-
-	print(env.rwd_keys_wt)
-
+	parameters = {**parameter, **env.rwd_keys_wt, **env.obs_dict.keys}
 	run["model/parameters"] = parameters
 	
 	

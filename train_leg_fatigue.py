@@ -47,7 +47,7 @@ class CustomNeptuneCallback(BaseCallback):
 
         return True
 
-dof_env = ['myoFatiLegReachFixed-v2']
+dof_env = ['myoFatiLegReachFixed-v4']
 
 training_steps = 5000000
 for env_name in dof_env:
@@ -63,7 +63,7 @@ for env_name in dof_env:
 
 
 
-	env_name = 'myoFatiLegReachFixed-v2'
+	env_name = 'myoFatiLegReachFixed-v4'
 	log_path = './standingBalance-Fatigue/policy_best_model/'+ env_name + '/' + time_now +'/'
 	env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 	print(env_name)
@@ -72,7 +72,7 @@ for env_name in dof_env:
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
-	loaded_model = "2024_02_13_09_44_05"
+	loaded_model = "2024_01_15_22_17_05"
 
 	parameter = {
     "dense_units": 256,
@@ -80,11 +80,11 @@ for env_name in dof_env:
     "max_episode_steps": env._max_episode_steps,
 	"training_steps": training_steps,
 	"loaded_model": loaded_model,
+    "perturb_force_low": env.force_range[0],
+    "perturb_force_high": env.force_range[0]
 	}
 
 	parameters = {**parameter, **env.rwd_keys_wt}
-
-	print(env.rwd_keys_wt)
 
 	run["model/parameters"] = parameters
 	
