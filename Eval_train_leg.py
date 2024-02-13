@@ -26,7 +26,7 @@ step = False
 movie = True
 path = './'
 
-model_num = '2024_01_16_22_17_55'
+model_num = '2024_02_13_09_44_05'
 if sarco:
   env_name = 'myoSarcLegReachFixed-v3'
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ 'myoLegReachFixed-v2' + '/' + model_num +
@@ -43,8 +43,9 @@ else:
   env_name = 'myoLegReachFixed-v2'
   #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
                    #+ model_num + '/best_model')
-  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
-                  r'/best_model')
+  #model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+                 #r'/best_model')
+  model = PPO.load('ep_train_results')
   env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 
 s, m, t = [], [], []
@@ -54,7 +55,7 @@ env.reset()
 random.seed() 
 
 frames = []
-view = 'side'
+view = 'front'
 for _ in tqdm(range(3)):
     ep_rewards = []
     done = False

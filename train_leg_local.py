@@ -11,7 +11,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import EvalCallback, CallbackList, BaseCallback
 from stable_baselines3.common.monitor import Monitor
-import helper_callback
+#import helper_callback
 
 from datetime import datetime
 import torch
@@ -57,8 +57,6 @@ training_steps = 5000000
 for env_name in dof_env:
 	print('Begin training')
 
-	
-
 	start_time = time.time()
 	time_now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 	print(time_now + '\n\n')
@@ -85,7 +83,7 @@ for env_name in dof_env:
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
-	loaded_model = "2024_01_15_22_17_05"
+	loaded_model = "2024_02_13_09_44_05"
 
 	parameter = {
     "dense_units": 256,
