@@ -81,7 +81,7 @@ for env_name in dof_env:
 	"training_steps": training_steps,
 	"loaded_model": loaded_model,
     "perturb_force_low": env.force_range[0],
-    "perturb_force_high": env.force_range[0]
+    "perturb_force_high": env.force_range[1]
 	}
 
 	parameters = {**parameter, **env.rwd_keys_wt}
