@@ -14,7 +14,7 @@ step = False
 movie = True
 path = './'
 
-model_num = '2024_02_14_23_27_06'
+model_num = '2024_02_15_18_59_03'
 if sarco:
   env_name = 'myoSarcLegReachFixed-v3'
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ 'myoLegReachFixed-v2' + '/' + model_num +

@@ -14,7 +14,7 @@ if sarco:
     name = '2023_12_04_18_29_11'
     env_name = 'myoSarcLegReachFixed-v3'
 else:
-    name = '2023_11_22_17_43_32'
+    name = '2024_01_15_22_17_05'
     env_name = 'myoLegReachFixed-v2'
 steps = 1000
 pkl_path = './output/PKL/' + env_name + '/'
@@ -79,4 +79,9 @@ for data in stand:
 
     
 pert_AP = [pert_1_AP, pert_2_AP, pert_3_AP, pert_4_AP, pert_5_AP]
-pert_ML = [pert_1_ML, pert_2_ML, pert_3_ML, pert_4_ML, pert_5_ML]
+
+print(pert_AP)
+
+plt.rcParams.update({
+    "font.family": "Times New Roman",  # specify font family here
+    "font.size":15}) 

@@ -159,7 +159,8 @@ def storeData(env, model, steps, env_name, file_name):
             qpos_dict[joint][_] = env.sim.data.joint(joint).qpos.copy()#env.sim.data.get_jnt_qpos(joint).copy()
             qvel_dict[joint][_] = env.sim.data.joint(joint).qvel.copy()#env.sim.data.get_joint_qvel(joint).copy()
             qtorque_dict[joint][_] = env.sim.data.joint(joint).qfrc_smooth + env.sim.data.joint(joint).qfrc_constraint.copy()
-            
+        qpos_dict['hip_flexion_l'][_] =-env.obs_dict['pelvis_rot'][0]+env.sim.data.joint('hip_flexion_l').qpos.copy()
+        qpos_dict['hip_flexion_r'][_]= -env.obs_dict['pelvis_rot'][0]+env.sim.data.joint('hip_flexion_r').qpos.copy()   
         qacc.append(env.sim.data.qacc.copy())
 
         # Body Info
@@ -228,6 +229,7 @@ def storeData(env, model, steps, env_name, file_name):
 
     for joint in joint_names:
         qpos, qvel, qtau = [], [], []
+        hip_fle_l, hip_fle_r = [], []
         for _ in range(steps):
             qpos.append(qpos_dict[joint][_])
             qvel.append(qvel_dict[joint][_])
@@ -235,6 +237,8 @@ def storeData(env, model, steps, env_name, file_name):
         dataStore['jointInfo']['qpos'][joint] = qpos
         dataStore['jointInfo']['qvel'][joint] = qvel
         dataStore['jointInfo']['qtau'][joint] = qtau
+    #print('knee',dataStore['jointInfo']['qpos']['knee_angle_l'])
+    #print(dataStore['jointInfo']['qpos']['hip_flexion_l'])
     # dataStore['jointInfo']['qpos'] = qpos
     # dataStore['jointInfo']['qvel'] = qvel
     dataStore['jointInfo']['qacc'] = qacc
@@ -247,6 +251,7 @@ def storeData(env, model, steps, env_name, file_name):
         dataStore['muscleInfo']['muscleActivation'][actuator] = muscleActivation
 
     dataStore['bodyInfo']['com'] = com
+    dataStore['bodyInfo']['height'] = com1[-1]
     dataStore['bodyInfo']['bos'] = bos
     dataStore['bodyInfo']['xpos'] = xpos
     dataStore['bodyInfo']['xipos'] = xipos
@@ -282,7 +287,7 @@ nb_seed = 1
 # If automatic is True, it will loop through all files in the policy_best_model folder. 
 automatic = False
 selected = True # If selected = true, make sure you write the file you want :)
-selected_file = ['2024_01_15_22_17_05'] 
+selected_file = ['2024_02_14_00_11_08'] 
 # Which output do you want? 
 movie = False
 img = False
