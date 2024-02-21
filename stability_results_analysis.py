@@ -24,46 +24,34 @@ from shapely.geometry import Polygon
 import matplotlib.pyplot as plt
 
 
-'''
-frames_front = []
-for _ in tqdm(range(1000)):
-    obs = env.get_obs_vec()
-    action, __ = model.predict(obs, deterministic=True)
-
-    env.sim.data.ctrl[:] = action
-    obs, reward, done, info = env.step(action)
-
-    geom_1_indices = np.where(env.sim.model.geom_group == 1)
-    env.sim.model.geom_rgba[geom_1_indices, 3] = 0
-    # env.sim.model.render_contexts[-1].vopt.flags[3] = 1
-    # frame_side = env.sim.sim.render(width=800, height=800,mode='offscreen', camera_name='side_view') # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
-    # frames_side.append(frame_side[::-1,:,:])
-    # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
-    frame_front = env.sim.renderer.render_offscreen(width=640, height=480,camera_id='front_view')
-    frame_front = np.rot90(np.rot90(frame_front))
-    
-    frames_front.append(frame_front[::-1, :, :])
-    
-print('Making movie')
-video_path = './videos/' + env_name + '/'
-os.makedirs( video_path, exist_ok=True)
-
-# make a local copy 
-#skvideo.io.vwrite(video_path + file_name + '_side' + '.mp4', np.asarray(frames_side), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
-skvideo.io.vwrite(video_path + 'trail1' +  '_front' + '.mp4', np.asarray(frames_front), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
-print('Movie saved successfully to file')
-'''
 def storeData(env, model, steps, env_name, file_name):
     body_names = ['calcn_l', 'calcn_r', 'femur_l', 'femur_r', 'patella_l', 'patella_r', 
                                             'pelvis', 'root', 'talus_l', 'talus_r', 'tibia_l', 'tibia_r', 'toes_l', 'toes_r', 'world']
     joint_names = ['ankle_angle_l', 'ankle_angle_r', 'hip_adduction_l', 'hip_adduction_r', 'hip_flexion_l', 
-                                            'hip_flexion_r', 'hip_rotation_l', 'hip_rotation_r', 'knee_angle_l', 'knee_angle_l_beta_rotation1', 
-                                            'knee_angle_l_beta_translation1', 'knee_angle_l_beta_translation2', 'knee_angle_l_rotation2', 'knee_angle_l_rotation3', 
-                                            'knee_angle_l_translation1', 'knee_angle_l_translation2', 'knee_angle_r', 'knee_angle_r_beta_rotation1', 'knee_angle_r_beta_translation1', 
-                                            'knee_angle_r_beta_translation2', 'knee_angle_r_rotation2', 'knee_angle_r_rotation3', 'knee_angle_r_translation1', 'knee_angle_r_translation2', 
+                                            'hip_flexion_r', 'hip_rotation_l', 'hip_rotation_r', 'knee_angle_l', 'knee_angle_r',  
                                             'mtp_angle_l', 'mtp_angle_r', 'subtalar_angle_l', 'subtalar_angle_r']
-    tendon_names = ['addbrev_l_tendon', 'addbrev_r_tendon', 'addlong_l_tendon', 'addlong_r_tendon', 'addmagDist_l_tendon', 'addmagDist_r_tendon', 'addmagIsch_l_tendon', 'addmagIsch_r_tendon', 'addmagMid_l_tendon', 'addmagMid_r_tendon', 'addmagProx_l_tendon', 'addmagProx_r_tendon', 'bflh_l_tendon', 'bflh_r_tendon', 'bfsh_l_tendon', 'bfsh_r_tendon', 'edl_l_tendon', 'edl_r_tendon', 'ehl_l_tendon', 'ehl_r_tendon', 'fdl_l_tendon', 'fdl_r_tendon', 'fhl_l_tendon', 'fhl_r_tendon', 'gaslat_l_tendon', 'gaslat_r_tendon', 'gasmed_l_tendon', 'gasmed_r_tendon', 'glmax1_l_tendon', 'glmax1_r_tendon', 'glmax2_l_tendon', 'glmax2_r_tendon', 'glmax3_l_tendon', 'glmax3_r_tendon', 'glmed1_l_tendon', 'glmed1_r_tendon', 'glmed2_l_tendon', 'glmed2_r_tendon', 'glmed3_l_tendon', 'glmed3_r_tendon', 'glmin1_l_tendon', 'glmin1_r_tendon', 'glmin2_l_tendon', 'glmin2_r_tendon', 'glmin3_l_tendon', 'glmin3_r_tendon', 'grac_l_tendon', 'grac_r_tendon', 'iliacus_l_tendon', 'iliacus_r_tendon', 'perbrev_l_tendon', 'perbrev_r_tendon', 'perlong_l_tendon', 'perlong_r_tendon', 'piri_l_tendon', 'piri_r_tendon', 'psoas_l_tendon', 'psoas_r_tendon', 'recfem_l_tendon', 'recfem_r_tendon', 'sart_l_tendon', 'sart_r_tendon', 'semimem_l_tendon', 'semimem_r_tendon', 'semiten_l_tendon', 'semiten_r_tendon', 'soleus_l_tendon', 'soleus_r_tendon', 'tfl_l_tendon', 'tfl_r_tendon', 'tibant_l_tendon', 'tibant_r_tendon', 'tibpost_l_tendon', 'tibpost_r_tendon', 'vasint_l_tendon', 'vasint_r_tendon', 'vaslat_l_tendon', 'vaslat_r_tendon', 'vasmed_l_tendon', 'vasmed_r_tendon']
-    actuator_names =  ['addbrev_l', 'addbrev_r', 'addlong_l', 'addlong_r', 'addmagDist_l', 'addmagDist_r', 'addmagIsch_l', 
+    '''
+    tendon_names = ['addbrev_l_tendon', 'addbrev_r_tendon', 'addlong_l_tendon', 'addlong_r_tendon', 'addmagDist_l_tendon', 
+                    'addmagDist_r_tendon', 'addmagIsch_l_tendon', 'addmagIsch_r_tendon', 'addmagMid_l_tendon', 'addmagMid_r_tendon', 
+                    'addmagProx_l_tendon', 'addmagProx_r_tendon', 'bflh_l_tendon', 'bflh_r_tendon', 'bfsh_l_tendon', 'bfsh_r_tendon', 
+                    'edl_l_tendon', 'edl_r_tendon', 'ehl_l_tendon', 'ehl_r_tendon', 'fdl_l_tendon', 'fdl_r_tendon', 'fhl_l_tendon', 
+                    'fhl_r_tendon', 'gaslat_l_tendon', 'gaslat_r_tendon', 'gasmed_l_tendon', 'gasmed_r_tendon', 'glmax1_l_tendon', 
+                    'glmax1_r_tendon', 'glmax2_l_tendon', 'glmax2_r_tendon', 'glmax3_l_tendon', 'glmax3_r_tendon', 'glmed1_l_tendon', 
+                    'glmed1_r_tendon', 'glmed2_l_tendon', 'glmed2_r_tendon', 'glmed3_l_tendon', 'glmed3_r_tendon', 'glmin1_l_tendon', 
+                    'glmin1_r_tendon', 'glmin2_l_tendon', 'glmin2_r_tendon', 'glmin3_l_tendon', 'glmin3_r_tendon', 'grac_l_tendon', 
+                    'grac_r_tendon', 'iliacus_l_tendon', 'iliacus_r_tendon', 'perbrev_l_tendon', 'perbrev_r_tendon', 'perlong_l_tendon', 
+                    'perlong_r_tendon', 'piri_l_tendon', 'piri_r_tendon', 'psoas_l_tendon', 'psoas_r_tendon', 'recfem_l_tendon', 'recfem_r_tendon', 'sart_l_tendon', 'sart_r_tendon', 'semimem_l_tendon', 'semimem_r_tendon', 'semiten_l_tendon', 'semiten_r_tendon', 'soleus_l_tendon', 'soleus_r_tendon', 'tfl_l_tendon', 'tfl_r_tendon', 'tibant_l_tendon', 'tibant_r_tendon', 'tibpost_l_tendon', 'tibpost_r_tendon', 'vasint_l_tendon', 'vasint_r_tendon', 'vaslat_l_tendon', 'vaslat_r_tendon', 'vasmed_l_tendon', 'vasmed_r_tendon']
+    '''
+    actuator_names =  ['addbrev_l', 'addbrev_r', 'addlong_l', 'addlong_r', 'addmagDist_l', 'addmagDist_r', 'addmagIsch_l', 'addmagIsch_r', 
+                       'addmagMid_l', 'addmagMid_r', 'addmagProx_l', 'addmagProx_r', 'glmax1_l', 'glmax1_r', 'glmax2_l', 'glmax2_r', 'glmax3_l', 
+                       'glmax3_r', 'glmed1_l', 'glmed1_r', 'glmed2_l', 'glmed2_r', 'glmed3_l', 'glmed3_r', 'glmin1_l', 'glmin1_r', 'glmin2_l', 'glmin2_r', 
+                       'glmin3_l', 'glmin3_r', 'iliacus_l', 'iliacus_r', 'psoas_l', 'psoas_r', 'piri_l', 'piri_r', 'tfl_l', 'tfl_r', 'sart_l', 'sart_r', 
+                       'recfem_l', 'recfem_r', 'edl_l', 'edl_r', 'ehl_l', 'ehl_r', 'fdl_l', 'fdl_r', 'fhl_l', 'fhl_r', 'tibant_l', 'tibant_r', 'tibpost_l', 
+                        'tibpost_r', 'perbrev_l', 'perbrev_r', 'perlong_l', 'perlong_r', 'gaslat_l', 'gaslat_r', 'gasmed_l', 'gasmed_r', 'soleus_l', 'soleus_r']
+
+
+    '''
+    ['addbrev_l', 'addbrev_r', 'addlong_l', 'addlong_r', 'addmagDist_l', 'addmagDist_r', 'addmagIsch_l', 
                        'addmagIsch_r', 'addmagMid_l', 'addmagMid_r', 'addmagProx_l', 'addmagProx_r', 'bflh_l', 'bflh_r', 'bfsh_l', 
                        'bfsh_r', 'edl_l', 'edl_r', 'ehl_l', 'ehl_r', 'fdl_l', 'fdl_r', 'fhl_l', 'fhl_r', 'gaslat_l', 'gaslat_r', 
                        'gasmed_l', 'gasmed_r', 'glmax1_l', 'glmax1_r', 'glmax2_l', 'glmax2_r', 'glmax3_l', 'glmax3_r', 'glmed1_l', 
@@ -72,12 +60,12 @@ def storeData(env, model, steps, env_name, file_name):
                        'perlong_r', 'piri_l', 'piri_r', 'psoas_l', 'psoas_r', 'recfem_l', 'recfem_r', 'sart_l', 'sart_r', 'semimem_l', 
                        'semimem_r', 'semiten_l', 'semiten_r', 'soleus_l', 'soleus_r', 'tfl_l', 'tfl_r', 'tibant_l', 'tibant_r', 'tibpost_l', 
                        'tibpost_r', 'vasint_l', 'vasint_r', 'vaslat_l', 'vaslat_r', 'vasmed_l', 'vasmed_r']
-
+    '''
     dataStore = {}
     dataStore['modelInfo'] = {}
     dataStore['modelInfo']['bodyNames'] =  body_names
     dataStore['modelInfo']['jointNames'] = joint_names
-    dataStore['modelInfo']['tendonNames'] = tendon_names
+    #dataStore['modelInfo']['tendonNames'] = tendon_names
     dataStore['modelInfo']['rewardWeights'] = env.rwd_keys_wt
     dataStore['modelInfo']['trainingSteps'] = 15000000
     dataStore['modelInfo']['testSteps'] = steps
@@ -168,11 +156,14 @@ def storeData(env, model, steps, env_name, file_name):
             if _ == 0:
                 qpos_dict[joint], qvel_dict[joint], qtorque_dict[joint] = {}, {}, {}
             
-            qpos_dict[joint][_] = env.sim.data.qpos[env.sim.model.joint_name2id(joint)].copy()#env.sim.data.get_jnt_qpos(joint).copy()
-            qvel_dict[joint][_] = env.sim.data.qvel[env.sim.model.joint_name2id(joint)].copy()#env.sim.data.get_joint_qvel(joint).copy()
-            qtorque_dict[joint][_] = env.sim.data.qfrc_smooth[env.sim.model.joint_name2id(joint)].copy()+ env.sim.data.qfrc_constraint[env.sim.model.joint_name2id(joint)].copy()#env.sim.data.qfrc_actuator[env.sim.model.joint_names.index(
-                #joint) + 6]
-            
+            qpos_dict[joint][_] = env.sim.data.joint(joint).qpos.copy()#env.sim.data.get_jnt_qpos(joint).copy()
+            qvel_dict[joint][_] = env.sim.data.joint(joint).qvel.copy()#env.sim.data.get_joint_qvel(joint).copy()
+            qtorque_dict[joint][_] = env.sim.data.joint(joint).qfrc_actuator.copy()
+            #env.sim.data.joint(joint).qfrc_smooth.copy() + env.sim.data.joint(joint).qfrc_constraint.copy()
+        #print(qtorque_dict['hip_flexion_l'][_])
+        #print('actuator',env.sim.data.joint('hip_flexion_l').qfrc_actuator.copy())
+        qpos_dict['hip_flexion_l'][_] =-env.obs_dict['pelvis_rot'][0]+env.sim.data.joint('hip_flexion_l').qpos.copy()
+        qpos_dict['hip_flexion_r'][_]= -env.obs_dict['pelvis_rot'][0]+env.sim.data.joint('hip_flexion_r').qpos.copy()   
         qacc.append(env.sim.data.qacc.copy())
 
         # Body Info
@@ -211,26 +202,22 @@ def storeData(env, model, steps, env_name, file_name):
         
         muscleAction.append(action.copy())
         muscleForce.append(env.sim.data.actuator_force.copy())
-        #muscleActivation.append(env.sim.data.act.copy())
         muscleLength.append(env.sim.data.actuator_length.copy())
         muscleMoment.append(env.sim.data.actuator_moment.copy())
         muscleVelocity.append(env.sim.data.actuator_velocity.copy())
 
+        #uncomment if need to produce videos
+        '''
+        #uncomment if need to produce videos
+        '''
         geom_1_indices = np.where(env.sim.model.geom_group == 1)
         env.sim.model.geom_rgba[geom_1_indices, 3] = 0
-        # env.sim.model.render_contexts[-1].vopt.flags[3] = 1
-        # frame_side = env.sim.sim.render(width=800, height=800,mode='offscreen', camera_name='side_view') # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
-        # frames_side.append(frame_side[::-1,:,:])
-        # if slow see https://github.com/facebookresearch/myosuite/blob/main/setup/README.md
         frame_front = env.sim.renderer.render_offscreen(width=640, height=480,camera_id='front_view')
         frame_front = np.rot90(np.rot90(frame_front))
-        frames_front.append(frame_front[::-1, :, :])
+        #frames_front.append(frame_front[::-1, :, :])
+        '''
 
-    if sarco:
-        sa = '-sarco'
-    else:
-        sa = ''
-    tb_logdir = f"./StepBalance/temp_env_tensorboard/" + env_name + '/' + env_name + "_" + file_name + "_1"
+    tb_logdir = f"./standingBalance/temp_env_tensorboard/" + env_name + '/' + env_name + "_" + file_name + "_1"
     event_accumulator = EventAccumulator(tb_logdir)
     event_accumulator.Reload()
     events = event_accumulator.Scalars('rollout/ep_rew_mean')
@@ -247,6 +234,8 @@ def storeData(env, model, steps, env_name, file_name):
 
     for joint in joint_names:
         qpos, qvel, qtau = [], [], []
+        hip_fle_l, hip_fle_r = [], []
+        hip_fle_l, hip_fle_r = [], []
         for _ in range(steps):
             qpos.append(qpos_dict[joint][_])
             qvel.append(qvel_dict[joint][_])
@@ -254,6 +243,10 @@ def storeData(env, model, steps, env_name, file_name):
         dataStore['jointInfo']['qpos'][joint] = qpos
         dataStore['jointInfo']['qvel'][joint] = qvel
         dataStore['jointInfo']['qtau'][joint] = qtau
+    #print('knee',dataStore['jointInfo']['qpos']['knee_angle_l'])
+    #print(dataStore['jointInfo']['qpos']['hip_flexion_l'])
+    #print('knee',dataStore['jointInfo']['qpos']['knee_angle_l'])
+    #print(dataStore['jointInfo']['qpos']['hip_flexion_l'])
     # dataStore['jointInfo']['qpos'] = qpos
     # dataStore['jointInfo']['qvel'] = qvel
     dataStore['jointInfo']['qacc'] = qacc
@@ -266,6 +259,8 @@ def storeData(env, model, steps, env_name, file_name):
         dataStore['muscleInfo']['muscleActivation'][actuator] = muscleActivation
 
     dataStore['bodyInfo']['com'] = com
+    dataStore['bodyInfo']['height'] = com1[-1]
+    dataStore['bodyInfo']['height'] = com1[-1]
     dataStore['bodyInfo']['bos'] = bos
     dataStore['bodyInfo']['xpos'] = xpos
     dataStore['bodyInfo']['xipos'] = xipos
@@ -301,18 +296,27 @@ nb_seed = 1
 # If automatic is True, it will loop through all files in the policy_best_model folder. 
 automatic = False
 selected = True # If selected = true, make sure you write the file you want :)
-selected_file = ['2023_12_04_18_29_11'] 
+#selected_file = ['2024_02_17_18_56_59'] 
 # Which output do you want? 
-movie = True
+movie = False
+movie = False
 img = False
 pdf = False
-sarco = True
+sarco = False
+fatigue = True
 
 if sarco:
+    selected_file = ['2024_02_17_20_19_05'] 
     env_name = 'myoSarcLegReachFixed-v3'
-    dir_path = './standingBalance-sarco/policy_best_model/'+ 'myoLegReachFixed-v2' +'/'
+    dir_path = './standingBalance-sarco/policy_best_model/'+ 'myoSarcLegReachFixed-v3' +'/'
+    all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
+elif fatigue:
+    selected_file = ['2024_02_20_15_03_01'] 
+    env_name = 'myoFatiLegReachFixed-v4'
+    dir_path = './standingBalance-Fatigue/policy_best_model/'+ 'myoFatiLegReachFixed-v4' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
 else:
+    selected_file = ['2024_02_17_18_56_59'] 
     env_name = 'myoLegReachFixed-v2'
     dir_path = './standingBalance/policy_best_model/'+ env_name +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
@@ -331,7 +335,7 @@ else:
 policy_name = name_list[0]
 print(policy_name)
 
-policy_path = dir_path + '/' + policy_name + '/best_model.zip'
+policy_path = dir_path + '/' + policy_name + '/best_model'
 
 model = PPO.load(policy_path)
 env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}') 
@@ -339,8 +343,6 @@ env.reset()
 random.seed() 
 steps = 1000
 obs = env.get_obs_vec()
-print(len(obs))
-print(obs)
 obs_dict = env.get_obs_dict(env.sim)
 
 for key in obs_dict.keys():print(f'{key} {len(obs_dict[key])}')
@@ -349,7 +351,8 @@ pkl_path = './output/PKL/' + env_name + '/'
 
 os.makedirs(pkl_path, exist_ok=True)
 
-for ep in range(200):
+for ep in range(100):
+for ep in range(100):
     print(f'### EPISODE {ep} ###')
     env = gym.make(env_name) 
     env.reset()
@@ -357,17 +360,23 @@ for ep in range(200):
     data = {}
     data = storeData(env, model, steps, env_name, policy_name)
     
-    frames_front = data['videos']
-    data['videos'] = {}
+    #frames_front = data['videos']
+    #data['videos'] = {}
+    #frames_front = data['videos']
+    #data['videos'] = {}
 
     #print('Making movie')
-    video_path = './output/videos/' + env_name  + '/' +  policy_name + '/'
-    os.makedirs(video_path, exist_ok=True)
+    #video_path = './output/videos/' + env_name  + '/' +  policy_name + '/'
+    #os.makedirs(video_path, exist_ok=True)
+    #video_path = './output/videos/' + env_name  + '/' +  policy_name + '/'
+    #os.makedirs(video_path, exist_ok=True)
 
     # make a local copy skvideo.io.vwrite(video_path + file_name + '_side' + '.mp4', np.asarray(frames_side), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
-    skvideo.io.vwrite(video_path +  policy_name + '_' + str(ep)  + '.mp4', np.asarray(frames_front), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
+    #skvideo.io.vwrite(video_path +  policy_name + '_' + str(ep)  + '.mp4', np.asarray(frames_front), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
+    #skvideo.io.vwrite(video_path +  policy_name + '_' + str(ep)  + '.mp4', np.asarray(frames_front), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
 
-    with open(pkl_path + policy_name + '_' + str(ep+100) + '.pkl', 'wb') as fp:
+    with open(pkl_path + policy_name + '_' + str(ep) + '.pkl', 'wb') as fp:
+    with open(pkl_path + policy_name + '_' + str(ep) + '.pkl', 'wb') as fp:
         pickle.dump(data, fp)
         print('dictionary saved successfully to file')
     

@@ -1,19 +1,8 @@
 import gym
-from gym import spaces
-import mujoco_py
-import mj_envs
 import numpy as np
-from stable_baselines3 import PPO, SAC
-from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
-from stable_baselines3.common.utils import set_random_seed
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.callbacks import EvalCallback
-import torch
-import matplotlib.pyplot as plt
+from stable_baselines3 import PPO
+from stable_baselines3 import PPO
 import skvideo
-#skvideo.setFFmpegPath(r"C:\ffmpeg\bin")
-#skvideo.setFFmpegPath(r'C:\users\chery\appdata\local\packages\pythonsoftwarefoundation.python.3.8_qbz5n2kfra8p0\localcache\local-packages\python38\site-packages\ffmpeg')
 import skvideo.io
 import os
 import random
@@ -26,7 +15,7 @@ step = False
 movie = True
 path = './'
 
-model_num = '2024_02_13_12_44_46'
+model_num = '2024_02_17_20_19_05'
 if sarco:
   env_name = 'myoSarcLegReachFixed-v3'
   model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ 'myoLegReachFixed-v2' + '/' + model_num +
@@ -56,7 +45,7 @@ random.seed()
 
 frames = []
 view = 'front'
-for _ in tqdm(range(3)):
+for _ in tqdm(range(2)):
     ep_rewards = []
     done = False
     obs = env.reset()

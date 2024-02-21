@@ -1,0 +1,11 @@
+{"obj": {"type": "AssignString", "path": ["sys", "name"], "value": "Untitled"}, "version": 1, "at": 1708455804.519045}
+{"obj": {"type": "AssignString", "path": ["sys", "description"], "value": ""}, "version": 2, "at": 1708455804.5200448}
+{"obj": {"type": "AssignString", "path": ["monitoring", "6b52c829", "hostname"], "value": "MSI"}, "version": 3, "at": 1708455804.5200448}
+{"obj": {"type": "AssignString", "path": ["sys", "hostname"], "value": "MSI"}, "version": 4, "at": 1708455804.5200448}
+{"obj": {"type": "AssignString", "path": ["monitoring", "6b52c829", "pid"], "value": "26780"}, "version": 5, "at": 1708455804.5200448}
+{"obj": {"type": "AssignString", "path": ["monitoring", "6b52c829", "tid"], "value": "45752"}, "version": 6, "at": 1708455804.5200448}
+{"obj": {"type": "AssignBool", "path": ["sys", "failed"], "value": false}, "version": 7, "at": 1708455804.5200448}
+{"obj": {"type": "ClearStringLog", "path": ["monitoring", "6b52c829", "stdout"]}, "version": 8, "at": 1708455804.5200448}
+{"obj": {"type": "ClearStringLog", "path": ["monitoring", "6b52c829", "stderr"]}, "version": 9, "at": 1708455804.5200448}
+{"obj": {"type": "AssignString", "path": ["source_code", "entrypoint"], "value": "train_leg_sarcopenia.py"}, "version": 10, "at": 1708455804.5200448}
+{"obj": {"type": "UploadFileSet", "path": ["source_code", "files"], "file_globs": ["C:\\Users\\chery\\Documents\\MyoLeg_Sarcopenia\\train_leg_sarcopenia.py"], "reset": "False"}, "version": 11, "at": 1708455804.5210695}

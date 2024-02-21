@@ -66,24 +66,17 @@ for env_name in dof_env:
 	name = time_now
 	)
 
-	if step:
-		log_path = './StepBalance/policy_best_model/'+ env_name + '/' + time_now +'/'
-	elif sarco:
-		env_name = 'myoSarcLegReachFixed-v3'
-		log_path = './standingBalance-sarco/policy_best_model/'+ env_name + '/' + time_now +'/'
-		env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
-		print(env_name)
-	else:
-		env_name = 'myoLegReachFixed-v2'
-		log_path = './standingBalance/policy_best_model/'+ env_name + '/' + time_now +'/'
-		env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
-		print(env_name)
+
+	env_name = 'myoLegReachFixed-v2'
+	log_path = './standingBalance/policy_best_model/'+ env_name + '/' + time_now +'/'
+	env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
+	print(env_name)
 	print(env.rwd_keys_wt) 
 	print(env.obs_dict.keys())
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
-	loaded_model = "2024_02_13_09_44_05"
+	loaded_model = "2024_02_17_00_55_54"
 
 	parameter = {
     "dense_units": 256,
@@ -92,7 +85,8 @@ for env_name in dof_env:
 	"training_steps": training_steps,
 	"loaded_model": loaded_model,
 	"perturb_force_low": env.force_range[0],
-    "perturb_force_high": env.force_range[0]
+    "perturb_force_high": env.force_range[1]
+    "perturb_force_high": env.force_range[1]
 	}
 
 	parameters = {**parameter, **env.rwd_keys_wt}

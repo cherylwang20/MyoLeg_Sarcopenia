@@ -72,7 +72,7 @@ for env_name in dof_env:
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
-	loaded_model = "2024_01_15_22_17_05"
+	loaded_model = "2024_02_17_20_19_05"
 
 	parameter = {
     "dense_units": 256,
@@ -81,7 +81,7 @@ for env_name in dof_env:
 	"training_steps": training_steps,
 	"loaded_model": loaded_model,
     "perturb_force_low": env.force_range[0],
-    "perturb_force_high": env.force_range[0]
+    "perturb_force_high": env.force_range[1]
 	}
 
 	parameters = {**parameter, **env.rwd_keys_wt}
