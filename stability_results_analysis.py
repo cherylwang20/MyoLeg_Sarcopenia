@@ -257,6 +257,7 @@ def storeData(env, model, steps, env_name, file_name):
 
     dataStore['bodyInfo']['com'] = com
     dataStore['bodyInfo']['height'] = com1[-1]
+    dataStore['bodyInfo']['com'] = com_v
     dataStore['bodyInfo']['bos'] = bos
     dataStore['bodyInfo']['xpos'] = xpos
     dataStore['bodyInfo']['xipos'] = xipos
