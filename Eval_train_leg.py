@@ -15,26 +15,13 @@ movie = True
 path = './'
 
 model_num = '2024_02_17_20_19_05'
-if sarco:
-  env_name = 'myoSarcLegReachFixed-v3'
-  model = PPO.load(path+'/standingBalance-sarco/policy_best_model'+ '/'+ 'myoLegReachFixed-v2' + '/' + model_num +
-                  r'/best_model')
-  env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
-elif step:
-    env_name = 'myoLegStep-v0'
-    model = PPO.load('ep_train_results')
-    #model = SAC.load(r"C:/Users/chery\Documents/MyoLeg_Sarcopenia/standingBalance/SAR_RL_Leg_Stability_model_myoLegReachFixed-v2_0")
-    #model = PPO.load(path+'/StepBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
-                  #r'/best_model')
-    env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
-else:
-  env_name = 'myoLegReachFixed-v2'
-  #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
+env_name = 'myoLegReachFixed-v2'
+#model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
                    #+ model_num + '/best_model')
-  model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                  r'/best_model')
   #model = PPO.load('ep_train_results')
-  env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
+env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 
 s, m, t = [], [], []
 
