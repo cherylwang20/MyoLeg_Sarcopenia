@@ -124,6 +124,7 @@ def storeData(env, model, steps, env_name, file_name):
 
     dataStore['bodyInfo'] = {}
     dataStore['bodyInfo']['com'] = {}
+    dataStore['bodyInfo']['com_v'] = {}
     dataStore['bodyInfo']['bos'] = {}
     dataStore['bodyInfo']['xipos'] = {}
     dataStore['bodyInfo']['xpos'] = {}
@@ -155,8 +156,7 @@ def storeData(env, model, steps, env_name, file_name):
     state = []
     targetPosition, reachError, tipPosition, rewardDict = [], [], [], []
     qpos, qvel, qacc, torque = [], [], [], []
-    com, bos, xpos, xipos, grf_rToes, grf_lToes, grf_rCal, grf_lCal = [
-    ], [], [], [], [], [], [], []
+    com, com_v, bos, xpos, xipos, grf_rToes, grf_lToes, grf_rCal, grf_lCal = [], [], [], [], [], [], [], [], []
     muscleAction, muscleForce, muscleActivation, muscleLength, muscleMoment, muscleVelocity = [], [], [], [], [], []
     frames_side, frames_front = [], []
 
@@ -203,7 +203,9 @@ def storeData(env, model, steps, env_name, file_name):
         pos = env.sim.data.xipos.copy()
         mass = env.sim.model.body_mass
         com1 = np.sum(pos * mass.reshape((-1, 1)), axis=0) / np.sum(mass)
-
+        vel = env.sim.data.cvel.copy()
+        com_v_int = np.sum(vel *  mass.reshape((-1, 1)), axis=0) / np.sum(mass)
+        com_v.append(com_v_int[-3:].copy())
         com.append(com1[:2].copy())
         bos.append(np.append(x, y))
         xpos.append(env.sim.data.body_xpos.copy())
@@ -282,6 +284,7 @@ def storeData(env, model, steps, env_name, file_name):
         dataStore['muscleInfo']['muscleActivation'][actuator] = muscleActivation
 
     dataStore['bodyInfo']['com'] = com
+    dataStore['bodyInfo']['com_v'] = com_v
     dataStore['bodyInfo']['height'] = com1[-1]
     dataStore['bodyInfo']['bos'] = bos
     dataStore['bodyInfo']['xpos'] = xpos
