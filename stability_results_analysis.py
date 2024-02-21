@@ -330,7 +330,7 @@ sarco = False
 fatigue = False
 
 if sarco:
-    selected_file = ['2024_02_17_20_19_05'] 
+    selected_file = ['2024_02_17_18_56_59'] 
     env_name = 'myoSarcLegReachFixed-v3'
     dir_path = './standingBalance-sarco/policy_best_model/'+ 'myoSarcLegReachFixed-v3' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
@@ -340,7 +340,7 @@ elif fatigue:
     dir_path = './standingBalance-Fatigue/policy_best_model/'+ 'myoFatiLegReachFixed-v4' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
 else:
-    selected_file = ['2024_02_17_18_56_59'] 
+    selected_file = ['2024_02_17_20_19_05'] 
     env_name = 'myoLegReachFixed-v2'
     dir_path = './standingBalance/policy_best_model/'+ env_name +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
