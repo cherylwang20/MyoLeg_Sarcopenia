@@ -371,7 +371,7 @@ for ep in range(100):
     # make a local copy skvideo.io.vwrite(video_path + file_name + '_side' + '.mp4', np.asarray(frames_side), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
     # skvideo.io.vwrite(video_path +  policy_name + '_' + str(ep)  + '.mp4', np.asarray(frames_front), inputdict = {'-r':'100'}, outputdict={"-pix_fmt": "yuv420p"})
 
-    with open(pkl_path + policy_name + '_lp_' + str(ep) + '.pkl', 'wb') as fp:
+    with open(pkl_path + policy_name + '_' + str(ep) + '.pkl', 'wb') as fp:
         pickle.dump(data, fp)
         print('dictionary saved successfully to file')
     
