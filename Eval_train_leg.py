@@ -1,7 +1,6 @@
 import gym
 import numpy as np
 from stable_baselines3 import PPO
-from stable_baselines3 import PPO
 import skvideo
 import skvideo.io
 import os

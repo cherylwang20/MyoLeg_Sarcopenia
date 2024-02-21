@@ -1,18 +1,10 @@
 {
   "mode": "async",
-<<<<<<<< HEAD:.neptune/async/run__9b62161f-d8e5-4ecc-86a3-b3a67c6fef14/exec-1708455804.396178-2024-02-20_14.03.24.396178-26780/metadata.json
-  "containerId": "9b62161f-d8e5-4ecc-86a3-b3a67c6fef14",
-========
   "containerId": "9b59b3aa-1e84-4259-8104-2de760c5cb8e",
->>>>>>>> b4ceaa5ae09521e3d12e3d46d6186d8ce94e2133:.neptune/async/run__9b59b3aa-1e84-4259-8104-2de760c5cb8e/exec-1708095687.672308-2024-02-16_10.01.27.672308-32460/metadata.json
   "containerType": "run",
   "structureVersion": 1,
   "os": "Windows-10-10.0.22621-SP0",
   "pythonVersion": "3.8.10 (tags/v3.8.10:3d8993a, May  3 2021, 11:48:03) [MSC v.1928 64 bit (AMD64)]",
   "neptuneClientVersion": "1.8.6",
-<<<<<<<< HEAD:.neptune/async/run__9b62161f-d8e5-4ecc-86a3-b3a67c6fef14/exec-1708455804.396178-2024-02-20_14.03.24.396178-26780/metadata.json
-  "createdAt": "2024-02-20T19:03:24.396178"
-========
   "createdAt": "2024-02-16T15:01:27.672308"
->>>>>>>> b4ceaa5ae09521e3d12e3d46d6186d8ce94e2133:.neptune/async/run__9b59b3aa-1e84-4259-8104-2de760c5cb8e/exec-1708095687.672308-2024-02-16_10.01.27.672308-32460/metadata.json
 }
