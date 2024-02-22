@@ -300,7 +300,7 @@ selected = True # If selected = true, make sure you write the file you want :)
 movie = False
 img = False
 pdf = False
-sarco = False
+sarco = True
 fatigue = False
 
 if sarco:
