@@ -14,13 +14,13 @@ step = False
 movie = True
 path = './'
 
-model_num = '2024_02_17_20_19_05'
+model_num = '2024_02_21_21_22_44'
 env_name = 'myoLegReachFixed-v2'
 #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
                    #+ model_num + '/best_model')
-model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
-                 r'/best_model')
-  #model = PPO.load('ep_train_results')
+#model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
+#                 r'/best_model')
+model = PPO.load('ep_train_results')
 env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 
 s, m, t = [], [], []
