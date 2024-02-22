@@ -168,7 +168,7 @@ def storeData(env, model, steps, env_name, file_name):
 
         # Body Info
         x, y = np.array([]), np.array([])
-        for label in ['calcn_r', 'calcn_l', 'toes_r', 'toes_l']:
+        for label in ['calcn_r', 'calcn_l',  'toes_l', 'toes_r', 'calcn_r']:
             x_and_y = np.array(env.sim.data.xipos[env.sim.model.body_name2id(label)].copy())[
                 :2]  # select x and y position of the current body
             x = np.append(x, x_and_y[0])
@@ -278,13 +278,15 @@ def storeData(env, model, steps, env_name, file_name):
 
     dataStore['videos'] = frames_front
     
-    bos_final = dataStore['bodyInfo']['bos'][-1].reshape(2, 4)
+    '''
+    bos_final = dataStore['bodyInfo']['bos'][-1].reshape(2, 5)
     bos_final = mplPath.Path(bos_final.T)
     within = bos_final.contains_point(dataStore['bodyInfo']['com'][0])
     if within:
         dataStore['modelInfo']['stability_state'] = True
     else:
         dataStore['modelInfo']['stability_state'] = False
+    '''
 
     return dataStore
 
