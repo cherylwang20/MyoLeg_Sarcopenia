@@ -67,7 +67,7 @@ for env_name in dof_env:
 
 
 
-	env_name = 'myoLegReachFixed-v2'
+	env_name = 'myoLegReachFixed-v5'
 	log_path = './standingBalance/policy_best_model/'+ env_name + '/' + time_now +'/'
 	env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 	print(env_name)
