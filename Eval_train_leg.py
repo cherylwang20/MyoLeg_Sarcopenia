@@ -14,7 +14,7 @@ step = False
 movie = True
 path = './'
 
-model_num = '2024_02_24_17_12_44'
+model_num = '2024_02_25_16_49_02'
 env_name = 'myoLegReachFixed-v5'
 #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
                    #+ model_num + '/best_model')
