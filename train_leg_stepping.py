@@ -51,7 +51,7 @@ class CustomNeptuneCallback(BaseCallback):
 
         return True
 
-dof_env = ['myoLegStep-v0']
+dof_env = ['myoLegReachFixed-v5']
 
 training_steps = 5000000
 for env_name in dof_env:
@@ -67,7 +67,7 @@ for env_name in dof_env:
 
 
 
-	env_name = 'myoLegStep-v0'
+	env_name = 'myoLegReachFixed-v5'
 	log_path = './standingBalance/policy_best_model/'+ env_name + '/' + time_now +'/'
 	env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 	print(env_name)
@@ -99,9 +99,9 @@ for env_name in dof_env:
 	#policy_kwargs = dict(activation_fn=torch.nn.Sigmoid, net_arch=(dict(pi=[64, 64], vf=[64, 64])))
 	#model = PPO.load('standingBalance/policy_best_model/myoLegReachFixed-v2/2023_11_16_16_11_00/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
 
-	model = PPO('MlpPolicy', env, verbose=0, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/StandingBalance/temp_env_tensorboard/"+env_name)
+	##model = PPO('MlpPolicy', env, verbose=0, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/StandingBalance/temp_env_tensorboard/"+env_name)
 		#model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/2024_01_03_10_31_35/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
-	#model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
+	model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
 	
 	obs_callback = TensorboardCallback()
 	nep_callback = CustomNeptuneCallback(run=run)

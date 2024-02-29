@@ -300,7 +300,7 @@ selected = True # If selected = true, make sure you write the file you want :)
 movie = False
 img = False
 pdf = False
-sarco = True
+sarco = False
 fatigue = False
 
 if sarco:
@@ -308,16 +308,19 @@ if sarco:
     env_name = 'myoSarcLegReachFixed-v3'
     dir_path = './standingBalance-sarco/policy_best_model/'+ 'myoSarcLegReachFixed-v3' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
+    steps = 1000
 elif fatigue:
     selected_file = ['2024_02_20_15_03_01'] 
     env_name = 'myoFatiLegReachFixed-v4'
     dir_path = './standingBalance-Fatigue/policy_best_model/'+ 'myoFatiLegReachFixed-v4' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
+    steps = 1400
 else:
     selected_file = ['2024_02_17_20_19_05'] 
     env_name = 'myoLegReachFixed-v2'
     dir_path = './standingBalance/policy_best_model/'+ env_name +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
+    steps = 1000
 
 if automatic:
     # sort the directories by creation time, newest first
@@ -339,7 +342,6 @@ model = PPO.load(policy_path)
 env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}') 
 env.reset()
 random.seed() 
-steps = 1000
 obs = env.get_obs_vec()
 obs_dict = env.get_obs_dict(env.sim)
 
