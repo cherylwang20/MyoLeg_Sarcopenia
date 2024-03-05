@@ -10,7 +10,7 @@ from tqdm.auto import tqdm
 
 nb_seed = 1
 
-movie = True
+movie = False
 path = './'
 
 model_num = '2024_02_20_15_03_01'
@@ -36,7 +36,7 @@ for _ in tqdm(range(2)):
     obs = env.reset()
     step = 0
     muscle_act = []
-    for _ in tqdm(range(1400)):
+    for _ in tqdm(range(50)):
           obs = env.obsdict2obsvec(env.obs_dict, env.obs_keys)[1]
           #obs = env.get_obs_dict()
           
@@ -44,8 +44,14 @@ for _ in tqdm(range(2)):
           #env.sim.data.ctrl[:] = action
           obs, reward, done, info = env.step(action)
           acti = env.sim.data.act[env.sim.model.actuator_name2id('tibant_l')].copy()
+          contact_pos = env.sim.data.contact.pos
+          print(env.sim.data.ncon)
+          print(env.sim.data.sensor('l_foot'))
+          print(env.sim.data.sensor('l_toes'))
           #t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
           muscle_act.append(acti)
+          plt.scatter(contact_pos[:, 0], contact_pos[:, 1])
+          plt.show()
           m.append(action)
           if movie:
                   geom_1_indices = np.where(env.sim.model.geom_group == 1)
@@ -56,8 +62,7 @@ for _ in tqdm(range(2)):
                   frames.append(frame[::-1,:,:])
                   #env.sim.mj_render(mode='window') # GUI
           step += 1
-    plt.plot(range(step),muscle_act)
-    plt.show()
+
 
 
 # evaluate policy

@@ -14,7 +14,7 @@ step = False
 movie = True
 path = './'
 
-model_num = '2024_02_28_22_40_41'
+model_num = '2024_03_04_22_26_55'
 env_name = 'myoLegReachFixed-v5'
 #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
                    #+ model_num + '/best_model')
@@ -36,7 +36,7 @@ for _ in tqdm(range(2)):
     done = False
     obs = env.reset()
     step = 0
-    for _ in tqdm(range(700)):
+    for _ in tqdm(range(200)):
           obs = env.obsdict2obsvec(env.obs_dict, env.obs_keys)[1]
           #obs = env.get_obs_dict()
           
@@ -63,7 +63,7 @@ for _ in tqdm(range(10)): # 20 random targets
   done = False
   obs = env.reset()
   step = 0
-  while (not done) and (step < 700):
+  while (not done) and (step < 200):
       # get the next action from the policy
       #env.mj_render()
       action, _ = model.predict(obs)

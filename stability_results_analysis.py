@@ -129,9 +129,10 @@ def storeData(env, model, steps, env_name, file_name):
 
     qpos_dict, qvel_dict, qtorque_dict = {}, {}, {}
     state = []
+    contact_pos = []
     targetPosition, reachError, tipPosition, rewardDict = [], [], [], []
     qpos, qvel, qacc, torque = [], [], [], []
-    com, com_v, bos, xpos, xipos, grf_rToes, grf_lToes, grf_rCal, grf_lCal = [], [], [], [], [], [], [], [], []
+    com, com_v, bos, bos_height, xpos, xipos, grf_rToes, grf_lToes, grf_rCal, grf_lCal = [], [], [], [], [], [], [], [], [], []
     muscleAction, muscleForce, muscleActivation, muscleLength, muscleMoment, muscleVelocity = [], [], [], [], [], []
     frames_side, frames_front = [], []
 
@@ -167,12 +168,13 @@ def storeData(env, model, steps, env_name, file_name):
         qacc.append(env.sim.data.qacc.copy())
 
         # Body Info
-        x, y = np.array([]), np.array([])
-        for label in ['calcn_r', 'calcn_l',  'toes_l', 'toes_r', 'calcn_r']:
-            x_and_y = np.array(env.sim.data.xipos[env.sim.model.body_name2id(label)].copy())[
-                :2]  # select x and y position of the current body
-            x = np.append(x, x_and_y[0])
-            y = np.append(y, x_and_y[1])
+        x, y, z = np.array([]), np.array([]), np.array([])
+        for label in ['calcn_r', 'calcn_l',  'toes_l', 'toes_r']:#, 'calcn_r']:
+            x_and_y_and_z = np.array(env.sim.data.xipos[env.sim.model.body_name2id(label)].copy())  # select x and y position of the current body
+            x = np.append(x, x_and_y_and_z[0])
+            y = np.append(y, x_and_y_and_z[1])
+            z = np.append(z, x_and_y_and_z[2])
+            
 
         # CoM is considered to be the center of mass of the pelvis (for now)
         pos = env.sim.data.xipos.copy()
@@ -183,6 +185,8 @@ def storeData(env, model, steps, env_name, file_name):
         com_v.append(com_v_int[-3:].copy())
         com.append(com1[:2].copy())
         bos.append(np.append(x, y))
+        bos_height.append(z)
+        contact_pos.append(env.sim.data.contact.pos)
         xpos.append(env.sim.data.body_xpos.copy())
         xipos.append(env.sim.data.xipos.copy())
 
@@ -259,6 +263,8 @@ def storeData(env, model, steps, env_name, file_name):
     dataStore['bodyInfo']['height'] = com1[-1]
     dataStore['bodyInfo']['com_v'] = com_v
     dataStore['bodyInfo']['bos'] = bos
+    dataStore['bodyInfo']['bos_height'] = bos_height
+    dataStore['bodyInfo']['contact_pos'] = contact_pos
     dataStore['bodyInfo']['xpos'] = xpos
     dataStore['bodyInfo']['xipos'] = xipos
     dataStore['bodyInfo']['grf']['rToes'] = grf_rToes
@@ -314,7 +320,7 @@ elif fatigue:
     env_name = 'myoFatiLegReachFixed-v4'
     dir_path = './standingBalance-Fatigue/policy_best_model/'+ 'myoFatiLegReachFixed-v4' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
-    steps = 1400
+    steps = 2500
 else:
     selected_file = ['2024_02_17_20_19_05'] 
     env_name = 'myoLegReachFixed-v2'

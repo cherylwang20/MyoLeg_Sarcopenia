@@ -48,12 +48,11 @@ class CustomNeptuneCallback(BaseCallback):
             # Log episodic information to Neptune
             self.run["metrics/episode_reward"].append(episode_info['r'])
             self.run["metrics/episode_length"].append(episode_info['l'])
-
         return True
 
 dof_env = ['myoLegReachFixed-v5']
 
-training_steps = 5000000
+training_steps = 8000000
 for env_name in dof_env:
 	print('Begin training')
 
@@ -101,7 +100,8 @@ for env_name in dof_env:
 
 	##model = PPO('MlpPolicy', env, verbose=0, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/StandingBalance/temp_env_tensorboard/"+env_name)
 		#model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/2024_01_03_10_31_35/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
-	model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
+	model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, 
+                  device= 'auto',tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
 	
 	obs_callback = TensorboardCallback()
 	nep_callback = CustomNeptuneCallback(run=run)
