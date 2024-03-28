@@ -52,7 +52,7 @@ class CustomNeptuneCallback(BaseCallback):
 
 dof_env = ['myoLegReachFixed-v5']
 
-training_steps = 8000000
+training_steps = 5000000
 for env_name in dof_env:
 	print('Begin training')
 
@@ -62,7 +62,8 @@ for env_name in dof_env:
 	run = neptune.init_run(
     project="cherylwang20/MyoLeg-Stepping",
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiIyMGZmM2VhZC04ZDBjLTQxZGQtYjlkOS1hMzEyMGVkOTA3NzMifQ==",
-    )  # your credentials
+    name =  time_now
+	)  # your credentials
 
 
 
@@ -75,7 +76,7 @@ for env_name in dof_env:
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
-	loaded_model = "2024_02_17_00_55_54"
+	loaded_model = "2024_03_11_22_12_16"
 
 	parameter = {
     "dense_units": 256,
@@ -100,7 +101,7 @@ for env_name in dof_env:
 
 	##model = PPO('MlpPolicy', env, verbose=0, policy_kwargs =policy_kwargs, tensorboard_log="C:/Users/chery/Documents/MyoLeg_Sarcopenia/StandingBalance/temp_env_tensorboard/"+env_name)
 		#model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/2024_01_03_10_31_35/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
-	model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v2/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, 
+	model = PPO.load(f'standingBalance/policy_best_model/myoLegReachFixed-v5/' + loaded_model +'/best_model',  env, verbose=0, policy_kwargs=policy_kwargs, 
                   device= 'auto',tensorboard_log="./standingBalance/temp_env_tensorboard/"+env_name)
 	
 	obs_callback = TensorboardCallback()

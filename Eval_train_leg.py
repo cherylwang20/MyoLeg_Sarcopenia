@@ -1,6 +1,7 @@
 import gym
 import numpy as np
 from stable_baselines3 import PPO
+import matplotlib.pyplot as plt
 import skvideo
 import skvideo.io
 import os
@@ -11,16 +12,17 @@ nb_seed = 1
 
 sarco = False
 step = False
-movie = True
+movie = False
 path = './'
 
-model_num = '2024_03_04_22_26_55'
-env_name = 'myoLegReachFixed-v5'
+model_num = '2024_02_17_20_19_05' #2024_03_12_18_39_36'
+env_name = 'myoLegReachFixed-v2'
 #model = PPO.load(r"C:/Users/chery/Documents/MyoLeg_Sarcopenia/StepBalance/policy_best_model/SAR/myoLegReachFixed-v2/" 
                    #+ model_num + '/best_model')
 model = PPO.load(path+'/standingBalance/policy_best_model'+ '/'+ env_name + '/' + model_num +
                  r'/best_model')
 #model = PPO.load('ep_train_results')
+env_name = 'myoFatiLegReachFixed-v2'
 env = gym.make(f'mj_envs.robohive.envs.myo:{env_name}')
 
 s, m, t = [], [], []
@@ -30,19 +32,23 @@ env.reset()
 random.seed() 
 
 frames = []
-view = 'front'
+view = 'side'
+m_act = []
 for _ in tqdm(range(2)):
     ep_rewards = []
     done = False
     obs = env.reset()
     step = 0
-    for _ in tqdm(range(200)):
+    muscle_act = []
+    for _ in tqdm(range(4000)):
           obs = env.obsdict2obsvec(env.obs_dict, env.obs_keys)[1]
           #obs = env.get_obs_dict()
           
           action, _ = model.predict(obs, deterministic=True)
           #env.sim.data.ctrl[:] = action
           obs, reward, done, info = env.step(action)
+          acti = env.sim.data.act[env.sim.model.actuator_name2id('glmed1_r')].copy()
+          muscle_act.append(acti)
           #t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
           m.append(action)
           if movie:
@@ -54,6 +60,15 @@ for _ in tqdm(range(2)):
                   frames.append(frame[::-1,:,:])
                   #env.sim.mj_render(mode='window') # GUI
           step += 1
+    m_act.append(muscle_act)
+
+plt.rcParams.update({
+    "font.family": "Times New Roman",  # specify font family here
+    "font.size":15}) 
+plt.plot(np.mean(m_act, axis = 0))
+plt.xlabel('Time Step')
+plt.ylabel('Activation')
+plt.show()
 
 
 # evaluate policy
@@ -63,7 +78,7 @@ for _ in tqdm(range(10)): # 20 random targets
   done = False
   obs = env.reset()
   step = 0
-  while (not done) and (step < 200):
+  while (not done) and (step < 500):
       # get the next action from the policy
       #env.mj_render()
       action, _ = model.predict(obs)

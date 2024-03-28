@@ -59,7 +59,8 @@ for env_name in dof_env:
 	run = neptune.init_run(
     project="cherylwang20/MyoLeg-Fatigue",
     api_token="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiIyMGZmM2VhZC04ZDBjLTQxZGQtYjlkOS1hMzEyMGVkOTA3NzMifQ==",
-    )  # your credentials
+    name = time_now
+	)  # your credentials
 
 
 

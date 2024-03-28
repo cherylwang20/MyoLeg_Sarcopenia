@@ -136,12 +136,16 @@ def storeData(env, model, steps, env_name, file_name):
     muscleAction, muscleForce, muscleActivation, muscleLength, muscleMoment, muscleVelocity = [], [], [], [], [], []
     frames_side, frames_front = [], []
 
+    step = 0
+
     for _ in tqdm(range(dataStore['modelInfo']['testSteps'])):
         obs = env.get_obs_vec()
         action, __ = model.predict(obs, deterministic=True)
 
         env.sim.data.ctrl[:] = action
         obs, reward, done, info = env.step(action)
+
+        step += 1
 
         state.append(env.env.get_env_state())
         for isite in range(len(env.tip_sids)):
@@ -152,14 +156,23 @@ def storeData(env, model, steps, env_name, file_name):
             )) - np.array(env.sim.data.site_xpos[env.tip_sids[isite]].copy()))
 
         rewardDict.append(env.get_reward_dict(env.get_obs_dict(env.sim)).copy())
+
+
         # Joint Info
         for joint in joint_names:
             if _ == 0:
                 qpos_dict[joint], qvel_dict[joint], qtorque_dict[joint] = {}, {}, {}
             
+            #print(env.sim.data.joint('ankle_angle_l').qpos.copy())
             qpos_dict[joint][_] = env.sim.data.joint(joint).qpos.copy()#env.sim.data.get_jnt_qpos(joint).copy()
             qvel_dict[joint][_] = env.sim.data.joint(joint).qvel.copy()#env.sim.data.get_joint_qvel(joint).copy()
             qtorque_dict[joint][_] = env.sim.data.joint(joint).qfrc_actuator.copy()
+            #env.sim.data.joint(joint).qfrc_smooth.copy() + env.sim.data.joint(joint).qfrc_constraint.copy()
+            #
+        knee_1 = env.sim.data.joint('hip_flexion_r').qfrc_actuator.copy()
+        knee_2 = env.sim.data.joint('hip_flexion_r').qfrc_smooth.copy()
+        knee_3 = env.sim.data.joint('hip_flexion_r').qfrc_constraint.copy()
+        #print(knee_1, knee_2, knee_3 )
             #env.sim.data.joint(joint).qfrc_smooth.copy() + env.sim.data.joint(joint).qfrc_constraint.copy()
         #print(qtorque_dict['hip_flexion_l'][_])
         #print('actuator',env.sim.data.joint('hip_flexion_l').qfrc_actuator.copy())
@@ -220,6 +233,7 @@ def storeData(env, model, steps, env_name, file_name):
         frame_front = np.rot90(np.rot90(frame_front))
         #frames_front.append(frame_front[::-1, :, :])
         '''
+        
 
     tb_logdir = f"./standingBalance/temp_env_tensorboard/" + env_name + '/' + env_name + "_" + file_name + "_1"
     event_accumulator = EventAccumulator(tb_logdir)
@@ -316,11 +330,11 @@ if sarco:
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
     steps = 1000
 elif fatigue:
-    selected_file = ['2024_02_20_15_03_01'] 
+    selected_file = ['2024_03_13_17_14_35'] 
     env_name = 'myoFatiLegReachFixed-v4'
     dir_path = './standingBalance-Fatigue/policy_best_model/'+ 'myoFatiLegReachFixed-v4' +'/'
     all_dirs = [d for d in os.listdir(dir_path) if os.path.isdir(os.path.join(dir_path, d))]
-    steps = 2500
+    steps = 4000
 else:
     selected_file = ['2024_02_17_20_19_05'] 
     env_name = 'myoLegReachFixed-v2'

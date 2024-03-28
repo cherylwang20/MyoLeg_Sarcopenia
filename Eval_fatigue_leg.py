@@ -13,7 +13,7 @@ nb_seed = 1
 movie = False
 path = './'
 
-model_num = '2024_02_20_15_03_01'
+model_num = '2024_03_13_17_14_35'
 
 
 env_name = 'myoFatiLegReachFixed-v4'
@@ -30,28 +30,29 @@ random.seed()
 
 frames = []
 view = 'front'
+m_act = []
 for _ in tqdm(range(2)):
     ep_rewards = []
     done = False
     obs = env.reset()
     step = 0
     muscle_act = []
-    for _ in tqdm(range(50)):
+    for _ in tqdm(range(4000)):
           obs = env.obsdict2obsvec(env.obs_dict, env.obs_keys)[1]
           #obs = env.get_obs_dict()
           
           action, _ = model.predict(obs, deterministic=True)
           #env.sim.data.ctrl[:] = action
           obs, reward, done, info = env.step(action)
-          acti = env.sim.data.act[env.sim.model.actuator_name2id('tibant_l')].copy()
+          acti = env.sim.data.act[env.sim.model.actuator_name2id('glmed1_r')].copy()
           contact_pos = env.sim.data.contact.pos
-          print(env.sim.data.ncon)
-          print(env.sim.data.sensor('l_foot'))
-          print(env.sim.data.sensor('l_toes'))
+          #print(env.sim.data.ncon)
+          #print(env.sim.data.sensor('l_foot'))
+          #print(env.sim.data.sensor('l_toes'))
           #t.append(env.obs_dict['reach_err']) #s.append(env.sim.data.qpos[joint_interest_id])
           muscle_act.append(acti)
-          plt.scatter(contact_pos[:, 0], contact_pos[:, 1])
-          plt.show()
+          #plt.scatter(contact_pos[:, 0], contact_pos[:, 1])
+          #plt.show()
           m.append(action)
           if movie:
                   geom_1_indices = np.where(env.sim.model.geom_group == 1)
@@ -62,17 +63,27 @@ for _ in tqdm(range(2)):
                   frames.append(frame[::-1,:,:])
                   #env.sim.mj_render(mode='window') # GUI
           step += 1
+    m_act.append(muscle_act)
+
+plt.rcParams.update({
+    "font.family": "Times New Roman",  # specify font family here
+    "font.size":15}) 
+plt.plot(np.mean(m_act, axis = 0))
+plt.xlabel('Time Step')
+plt.ylabel('Activation')
+plt.show()
+    
 
 
 
 # evaluate policy
 all_rewards = []
-for _ in tqdm(range(10)): # 20 random targets
+for _ in tqdm(range(5)): # 20 random targets
   ep_rewards = []
   done = False
   obs = env.reset()
   step = 0
-  while (not done) and (step < 2000):
+  while (not done) and (step < 4000):
       # get the next action from the policy
       #env.mj_render()
       action, _ = model.predict(obs)

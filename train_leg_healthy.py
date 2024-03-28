@@ -76,7 +76,7 @@ for env_name in dof_env:
 	eval_callback = EvalCallback(env, best_model_save_path=log_path, log_path=log_path, eval_freq=10000, deterministic=True, render=False)
 	print('max episode steps: ', env._max_episode_steps) 
 
-	loaded_model = "2024_02_17_00_55_54"
+	loaded_model = "2024_02_17_20_19_05"
 
 	parameter = {
     "dense_units": 256,
